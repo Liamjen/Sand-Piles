@@ -28,6 +28,7 @@ int main(int argc, char* args[])
 	std::cout << "Wait until pile settles to render? (y/n): ";
 	std::cin >> toSettle;
 
+	bool creatingWalls = true;
 	bool waitToSettle = tolower(toSettle) == 'y' ? true : false;
 
 
@@ -66,12 +67,18 @@ int main(int argc, char* args[])
 			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN)
 			{
-				SDL_GetMouseState(&placeX, &placeY);
-				placeX /= renderScale; placeY /= renderScale;
+				if (creatingWalls)
+
+				else
+				{
+					SDL_GetMouseState(&placeX, &placeY);
+					placeX /= renderScale; placeY /= renderScale;
+				}
 			}
 		}
 
-		p.placeSandAndRender(placeX, placeY, sandToPlace);
+		if(!creatingWalls)
+			p.placeSandAndRender(placeX, placeY, sandToPlace);
 	}
 
 	//Free memory

@@ -18,6 +18,7 @@ public:
 	size_t getWidth();
 	size_t getHeight();
 	void placeSandAndRender(size_t x, size_t y, size_t amount);
+	void createWall(Point p1, Point p2);
 	void printBoard();
 	void randomizeColors();
 	size_t** getPile();

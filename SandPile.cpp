@@ -65,6 +65,11 @@ void SandPile::placeSandAndRender(size_t x, size_t y, size_t amount)
 	}
 }
 
+void SandPile::createWall(Point p1, Point p2)
+{
+
+}
+
 void SandPile::drawPoint(SDL_Renderer *renderer, Point p)
 {
 	size_t sandVal = pile[p.getX()][p.getY()];
