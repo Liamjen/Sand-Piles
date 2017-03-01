@@ -21,8 +21,8 @@ public:
 	void createWall(Point p1, Point p2);
 	void printBoard();
 	void randomizeColors();
-	size_t** getPile();
-	size_t **pile;
+	int** getPile();
+	int **pile;
 
 private:
 	std::vector<Point> getPossibleAdjacentPoints(size_t x, size_t y);

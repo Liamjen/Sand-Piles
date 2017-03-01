@@ -67,6 +67,7 @@ int main(int argc, char* args[])
 					break;
 				case SDLK_w:
 					creatingWalls = false;
+					break;
 				case SDLK_ESCAPE:
 					running = false;
 					break;

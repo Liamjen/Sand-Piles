@@ -7,10 +7,10 @@ SandPile::SandPile(size_t width, size_t height, size_t threshold, bool waitToSet
 	this->threshold = threshold;
 	this->waitToSettle = waitToSettle;
 	this->renderer = renderer;
-	pile = new size_t*[width];
+	pile = new int*[width];
 	for (size_t i = 0; i < width; i++)
 	{
-		pile[i] = new size_t[height];
+		pile[i] = new int[height];
 	}
 
 	for (size_t i = 0; i < width; i++)
@@ -67,12 +67,19 @@ void SandPile::placeSandAndRender(size_t x, size_t y, size_t amount)
 
 void SandPile::createWall(Point p1, Point p2)
 {
-	int rise = p1.y / p2.y;
-	int run = p1.x / p2.x;
+	int rise = p1.y - p2.y;
+	int run = p1.x - p2.x;
+	std::cout << "rise: " << rise << "\n";
+	std::cout << "run: " << rise << "\n";
 
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	for (int i = 0; i < run; i++)
 		for (int j = 0; j < rise; j++)
-			pile[run][rise] = -1;
+		{
+			pile[i][j] = -1;
+		}
+	SDL_RenderDrawLine(renderer, p1.x, p1.y, p2.x, p2.y);
+	SDL_RenderPresent(renderer);
 }
 
 void SandPile::drawPoint(SDL_Renderer *renderer, Point p)
@@ -128,7 +135,7 @@ std::vector<Point> SandPile::getPossibleAdjacentPoints(size_t x, size_t y)
 	return v;
 }
 
-size_t** SandPile::getPile()
+int** SandPile::getPile()
 {
 	return pile;
 }
