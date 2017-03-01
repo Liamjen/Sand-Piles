@@ -67,7 +67,12 @@ void SandPile::placeSandAndRender(size_t x, size_t y, size_t amount)
 
 void SandPile::createWall(Point p1, Point p2)
 {
+	int rise = p1.y / p2.y;
+	int run = p1.x / p2.x;
 
+	for (int i = 0; i < run; i++)
+		for (int j = 0; j < rise; j++)
+			pile[run][rise] = -1;
 }
 
 void SandPile::drawPoint(SDL_Renderer *renderer, Point p)

@@ -7,8 +7,6 @@ public:
 
 	int getX();
 	int getY();
-
-private:
 	int x, y;
 };
 

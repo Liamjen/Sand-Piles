@@ -44,6 +44,11 @@ int main(int argc, char* args[])
 	int placeX = SCREEN_WIDTH / 2 / renderScale;
 	int placeY = SCREEN_HEIGHT / 2 / renderScale;
 
+	Point p1(0, 0);
+	Point p2(0, 0);
+
+	SDL_RenderPresent(renderer);
+
 	/*
 	Main SDL loop
 	*/
@@ -60,6 +65,8 @@ int main(int argc, char* args[])
 				case SDLK_r:
 					p.randomizeColors();
 					break;
+				case SDLK_w:
+					creatingWalls = false;
 				case SDLK_ESCAPE:
 					running = false;
 					break;
@@ -68,11 +75,19 @@ int main(int argc, char* args[])
 			else if (event.type == SDL_MOUSEBUTTONDOWN)
 			{
 				if (creatingWalls)
-
+					SDL_GetMouseState(&p1.x, &p1.y);
 				else
 				{
 					SDL_GetMouseState(&placeX, &placeY);
 					placeX /= renderScale; placeY /= renderScale;
+				}
+			}
+			else if (event.type == SDL_MOUSEBUTTONUP)
+			{
+				if (creatingWalls)
+				{
+					SDL_GetMouseState(&p2.x, &p2.y);
+					p.createWall(p1, p2);
 				}
 			}
 		}
