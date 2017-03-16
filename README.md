@@ -8,6 +8,8 @@ Left Mouse Click: Choose new sand dropping destination
 
 Escape: Close window
 
+![Alt text](http://i.imgur.com/N2rF04n.png "Example Run")
+
 TODO:
 
 Sand piling on separate thread to allow instant event polling
