@@ -1,75 +1,81 @@
-#include "SandPile.h"
+#include "SandPile.hpp"
 
-SandPile::SandPile(size_t width, size_t height, size_t threshold, bool waitToSettle, SDL_Renderer *renderer)
+SandPile::SandPile(size_t width, size_t height, size_t threshold, bool waitToSettle, SDL_Renderer *renderer, ScreenBuffer* screenBuffer)
 {
 	this->height = height;
 	this->width = width;	
 	this->threshold = threshold;
 	this->waitToSettle = waitToSettle;
 	this->renderer = renderer;
-	pile = new size_t*[width];
-	for (size_t i = 0; i < width; i++)
+	this->thread = NULL;
+	this->pile = new size_t*[this->width];
+	this->screenBuffer = screenBuffer;
+	for (size_t i = 0; i < this->width; i++)
 	{
-		pile[i] = new size_t[height];
+		this->pile[i] = new size_t[this->height];
 	}
 
-	for (size_t i = 0; i < width; i++)
-		for (size_t j = 0; j < height; j++)
-			pile[i][j] = 0;
+	for (size_t i = 0; i < this->width; i++)
+		for (size_t j = 0; j < this->height; j++)
+			this->pile[i][j] = 0;
 
 	srand((unsigned int)time(NULL));
-	this->colors = generateColorPointer();
+	this->colors = this->generateColorPointer();
 }
 
-void SandPile::placeSandAndRender(size_t x, size_t y, size_t amount)
+int SandPile::placeSand(size_t x, size_t y, size_t amount)
 {
-	pile[x][y] += amount;
+	this->pile[x][y] += amount;
 
-	toCheck.push(Point(x, y));
+	this->toCheck.push(Point(x, y));
 
-	while (!toCheck.empty())
+	while (!(this->toCheck.empty()))
 	{
-		Point current = toCheck.top();
+		Point current = this->toCheck.top();
 
-		if (pile[current.getX()][current.getY()] >= threshold)
+		if (this->pile[current.getX()][current.getY()] >= this->threshold)
 		{
-			std::vector<Point> possibleAdjacentPoints = getPossibleAdjacentPoints(current.getX(), current.getY());
+			std::vector<Point> possibleAdjacentPoints = this->getPossibleAdjacentPoints(current.getX(), current.getY());
 
-			size_t divThreshold = pile[current.getX()][current.getY()] / threshold;
+			size_t divThreshold = this->pile[current.getX()][current.getY()] / this->threshold;
 
 			for (size_t i = 0; i < possibleAdjacentPoints.size(); i++)
 			{
-				pile[possibleAdjacentPoints[i].getX()][possibleAdjacentPoints[i].getY()] += divThreshold;
+				this->pile[possibleAdjacentPoints[i].getX()][possibleAdjacentPoints[i].getY()] += divThreshold;
 			}
-			pile[current.getX()][current.getY()] -= (divThreshold * threshold);
+			this->pile[current.getX()][current.getY()] -= (divThreshold * this->threshold);
 
-			drawPoint(renderer, current);
-			if (!waitToSettle)
-				SDL_RenderPresent(renderer);
+			this->drawToScreenBuffer(current);
 
-			toCheck.pop();
+			this->toCheck.pop();
 			for (size_t i = 0; i < possibleAdjacentPoints.size(); i++)
-				toCheck.push(possibleAdjacentPoints[i]);
+				this->toCheck.push(possibleAdjacentPoints[i]);
 		}
 		else
 		{
-			drawPoint(renderer, current);
-			if (!waitToSettle)
-				SDL_RenderPresent(renderer);
-			toCheck.pop();
+			this->drawToScreenBuffer(current);
+			/*
+			if (!this->waitToSettle)
+				SDL_RenderPresent(this->renderer);
+				*/
+			this->toCheck.pop();
 		}
 	}
-	if (waitToSettle)
+	/*
+	if (this->waitToSettle)
 	{
-		SDL_RenderPresent(renderer);
-	}
+		SDL_RenderPresent(this->renderer);
+	}*/
+
+	return true;
 }
 
-void SandPile::drawPoint(SDL_Renderer *renderer, Point p)
+void SandPile::drawToScreenBuffer(Point p)
 {
 	size_t sandVal = pile[p.getX()][p.getY()];
-	SDL_SetRenderDrawColor(renderer, colors[sandVal][0], colors[sandVal][1], colors[sandVal][2], 255);
-	SDL_RenderDrawPoint(renderer, p.getX(), p.getY());
+	this->screenBuffer->setPixel(p.getX(), p.getY(), this->colors[sandVal][0], 
+													 this->colors[sandVal][1], 
+													 this->colors[sandVal][2], 255);
 }
 
 int** SandPile::generateColorPointer()
@@ -89,15 +95,15 @@ int** SandPile::generateColorPointer()
 void SandPile::randomizeColors()
 {
 	free(colors);
-	colors = generateColorPointer();
+	this->colors = this->generateColorPointer();
 }
 
 void SandPile::printBoard()
 {
-	for (size_t i = 0; i < width; i++)
+	for (size_t i = 0; i < this->width; i++)
 	{
-		for (size_t j = 0; j < height; j++)
-			printf("%zu", pile[i][j]);
+		for (size_t j = 0; j < this->height; j++)
+			printf("%zu", this->pile[i][j]);
 		printf("\n");
 	}
 }
@@ -120,22 +126,22 @@ std::vector<Point> SandPile::getPossibleAdjacentPoints(size_t x, size_t y)
 
 size_t** SandPile::getPile()
 {
-	return pile;
+	return this->pile;
 }
 
 size_t SandPile::getHeight()
 {
-	return height;
+	return this->height;
 }
 
 size_t SandPile::getWidth()
 {
-	return width;
+	return this->width;
 }
 
 
 SandPile::~SandPile()
 {
-	delete(pile);
-	delete(colors);
+	delete(this->pile);
+	delete(this->colors);
 }

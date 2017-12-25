@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "Point.h"
+
+#include "Point.hpp"
 
 
 Point::Point(int x, int y)
@@ -10,12 +10,12 @@ Point::Point(int x, int y)
 
 int Point::getX()
 {
-	return x;
+	return this->x;
 }
 
 int Point::getY()
 {
-	return y;
+	return this->y;
 }
 
 Point::~Point()
