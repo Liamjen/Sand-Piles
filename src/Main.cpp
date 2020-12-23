@@ -51,13 +51,13 @@ int main(int argc, char* args[])
 
 	//TODO: Set boolean or just delete
 	SandPile* p = new SandPile(SCREEN_WIDTH, SCREEN_HEIGHT, threshold, true, renderer, screenBuffer);
-	std::thread thread (placeSandStatic, p, placeX, placeY, sandToPlace);
 
 	/*
 	Main SDL loop
 	*/
 	while (running)
 	{
+		p->placeSand(placeX, placeY, sandToPlace);
 		while (SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT)

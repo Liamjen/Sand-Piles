@@ -20,7 +20,16 @@ SandPile::SandPile(size_t width, size_t height, size_t threshold, bool waitToSet
 			this->pile[i][j] = 0;
 
 	srand((unsigned int)time(NULL));
-	this->colors = this->generateColorPointer();
+	int** colors = (int**)(malloc(threshold * sizeof(int)));
+	colors[0] = (int*)(malloc(3 * sizeof(int)));
+	colors[0][0] = 0; colors[0][1] = 0; colors[0][2] = 0;
+	for (size_t i = 1; i < threshold; i++)
+	{
+		colors[i] = (int*)(malloc(3 * sizeof(int)));
+		for (size_t j = 0; j < 3; j++)
+			colors[i][j] = rand() % 255;
+	}
+	this->colors = colors;
 }
 
 int SandPile::placeSand(size_t x, size_t y, size_t amount)
@@ -78,10 +87,11 @@ void SandPile::drawToScreenBuffer(Point p)
 													 this->colors[sandVal][2], 255);
 }
 
-int** SandPile::generateColorPointer()
+
+
+void SandPile::randomizeColors()
 {
-	int** colors = (int**)(malloc(threshold * sizeof(int)));
-	colors[0] = (int*)(malloc(3 * sizeof(int)));
+	srand((unsigned int)time(NULL));
 	colors[0][0] = 0; colors[0][1] = 0; colors[0][2] = 0;
 	for (size_t i = 1; i < threshold; i++)
 	{
@@ -89,13 +99,7 @@ int** SandPile::generateColorPointer()
 		for (size_t j = 0; j < 3; j++)
 			colors[i][j] = rand() % 255;
 	}
-	return colors;
-}
-
-void SandPile::randomizeColors()
-{
-	free(colors);
-	this->colors = this->generateColorPointer();
+	this->colors = colors;
 }
 
 void SandPile::printBoard()

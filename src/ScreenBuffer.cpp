@@ -7,11 +7,11 @@ ScreenBuffer::ScreenBuffer(size_t width, size_t height)
 
     this->pixels = new struct Pixel*[width];
 
-    for(int i = 0; i < width; i++)
+    for(size_t i = 0; i < width; i++)
     {
         this->pixels[i] = new struct Pixel[height];
 
-        for(int j = 0; j < height; j++)
+        for(size_t j = 0; j < height; j++)
         {
             //To know which to draw, alpha starts at 0
             pixels[i][j].a = 0;
